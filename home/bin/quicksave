@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+# 1. 为 root 创建快照
+sudo snapper -c root create -d "quicksave"
+
+# 2. 如果有 home 配置，也为 home 创建快照
+if snapper list-configs | grep -q "^home "; then
+    sudo snapper -c home create -d "quicksave"
+fi
+
+# 3. 发送通知
+if command -v notify-send &>/dev/null; then
+    notify-send "💾 Btrfs 镜像存档成功" "已通过 Snapper 锁定当前时空 (quicksave) 喵！" -i checkbox
+else
+    echo "💾 存档成功喵！"
+fi
+EOF

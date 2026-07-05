@@ -1,0 +1,16 @@
+cd ~/ComfyUI
+
+# 更新 ComfyUI
+git pull
+
+# 更新官方依赖
+uv pip install -r requirements.txt --python .venv/bin/python
+
+# 更新所有节点
+cd custom_nodes
+find . -maxdepth 1 -type d -exec git -C {} pull \;
+
+# 安装所有节点依赖
+find . -name requirements.txt -print0 | while IFS= read -r -d '' req; do
+    uv pip install -r "$req" --python ../.venv/bin/python
+done

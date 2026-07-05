@@ -1,0 +1,25 @@
+# 备份文件
+*.bak
+*.backup*
+*备份*
+
+# 自动生成的大文件 (>100KB)
+**/dank-colors.css
+
+# Fish 自动生成的状态
+config/fish/fish_variables
+
+# Yazi 下载的 flavors（由 yazi 包管理器管理）
+config/yazi/flavors/
+
+# Rime 构建缓存和字典（由 rime-ice 管理）
+config/fcitx5/rime/build/
+
+# Fcitx5 缓存
+config/fcitx5/conf/cached_layouts
+
+# 编辑器临时文件
+*~
+.*.swp
+.*.swo
+.DS_Store

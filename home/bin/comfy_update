@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -e
+
+COMFY="$HOME/AI_Workspace/ComfyUI"
+
+echo "==> Updating ComfyUI..."
+
+cd "$COMFY"
+
+git pull --ff-only
+
+echo
+echo "==> Updating core requirements..."
+
+uv pip install -r requirements.txt
+
+echo
+echo "✓ Done!"

@@ -1,0 +1,46 @@
+#!/usr/bin/env zsh
+
+# --- 1) 代理配置 ---
+export http_proxy="http://127.0.0.1:7890"
+export https_proxy="http://127.0.0.1:7890"
+export all_proxy="socks5://127.0.0.1:7890"
+export no_proxy="localhost,127.0.0.1,192.168.31.54"
+echo "✅ 终端代理已开启 (Port: 7890)"
+
+# --- 2) 进入目录并激活环境 ---
+cd "$HOME/AI_Workspace/ComfyUI" || { echo "❌ 找不到 ComfyUI 目录"; exit 1; }
+
+if [[ -f "venv/bin/activate" ]]; then
+    source venv/bin/activate
+    echo "✅ 已激活虚拟环境"
+else
+    echo "❌ 找不到 venv"
+    exit 1
+fi
+
+# --- 3) 自动搞定 --enable-manager 的前置依赖 (使用 uv 秒级同步) ---
+if [[ -f "manager_requirements.txt" ]]; then
+    echo "⚡ 正在通过 uv 检查 Manager 核心依赖..."
+    uv pip install -r manager_requirements.txt --quiet
+fi
+
+# --- 4) 注入 5070 Ti & Blackwell 深度优化变量 ---
+# 激进的防碎片化策略（保留此项，故在下方启动项中移除 --cuda-malloc）
+export PYTORCH_CUDA_ALLOC_CONF="expandable_segments:True"
+# 强制开启 cuDNN V8 加速（Blackwell 核心必备）
+export TORCH_CUDNN_V8_API_ENABLED=1
+# 允许 TensorCore 参与 FP32 计算（榨干 5070 Ti 算力）
+export TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=1
+
+# --- 5) 启动 ComfyUI ---
+python main.py \
+  --output-directory "/mnt/F/Comfyui/output/" \
+  --preview-method auto \
+  --async-offload \
+  --use-sage-attention \
+  --enable-triton-backend \
+  --supports-fp8-compute \
+  --fast-disk \
+  --bf16-vae \
+  --auto-launch \
+  --enable-manager

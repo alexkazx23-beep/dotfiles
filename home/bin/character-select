@@ -1,0 +1,14 @@
+#!/bin/bash
+
+export NVM_DIR="$HOME/.nvm"
+
+if [ -s "/usr/share/nvm/init-nvm.sh" ]; then
+    source /usr/share/nvm/init-nvm.sh
+fi
+
+cd /home/Alexkazx/AI_Workspace/character_select_stand_alone_app || exit
+
+export ONNXRUNTIME_NODE_INSTALL=skip
+export ELECTRON_OZONE_PLATFORM_HINT=x11
+
+npm start

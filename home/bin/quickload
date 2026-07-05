@@ -1,0 +1,64 @@
+#!/usr/bin/env zsh
+
+TARGET_DESC="quicksave"
+
+# 检查依赖
+if ! command -v snapper &> /dev/null || ! command -v btrfs-assistant &> /dev/null; then
+    if command -v notify-send &>/dev/null; then
+        notify-send "❌ 读档失败" "缺少 snapper 或 btrfs-assistant 工具喵！" -i error
+    fi
+    exit 1
+fi
+
+# 核心回滚函数（完全照搬原作者 undochange.sh 的底层逻辑）
+perform_rollback() {
+    local subvol="$1"
+    local snap_conf="$2"
+
+    # 1. 获取最新那条描述为 quicksave 的快照 ID
+    local snap_id=$(sudo snapper -c "$snap_conf" list --columns number,description | grep "$TARGET_DESC" | tail -n 1 | awk '{print $1}')
+
+    if [ -z "$snap_id" ]; then
+        return 1
+    fi
+
+    # 2. 映射到 Btrfs-Assistant 的索引
+    local ba_index=$(sudo btrfs-assistant -l | awk -v v="$subvol" -v s="$snap_id" '$2==v && $3==s {print $1}')
+
+    if [ -z "$ba_index" ]; then
+        return 1
+    fi
+
+    # 3. 执行物理子卷替换
+    if sudo btrfs-assistant -r "$ba_index"; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+if command -v notify-send &>/dev/null; then
+    notify-send "🔄 Btrfs 正在全盘回滚..." "正在恢复 root 和 home 子卷至最近一次存档..." -i reload
+fi
+
+# 执行 Root 回滚
+if ! perform_rollback "@" "root"; then
+    if command -v notify-send &>/dev/null; then
+        notify-send "❌ 回档失败" "未能成功回滚 root 分区，操作终止喵！" -i error
+    fi
+    exit 1
+fi
+
+# 执行 Home 回滚
+if snapper list-configs | grep -q "^home "; then
+    perform_rollback "@home" "home"
+fi
+
+# 提示并重启
+if command -v notify-send &>/dev/null; then
+    notify-send "✨ 读档完成" "整盘已恢复！电脑将在 3 秒后重启生效喵！" -i checkbox
+fi
+
+sleep 3
+sudo reboot
+EOF

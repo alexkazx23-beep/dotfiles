@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+cd /mnt/D/AI_Env/anima_lora || exit
+
+source .venv/bin/activate
+
+#export TORCH_CUDNN_V8_API_DISABLED=1
+
+
+python -m web --host 127.0.0.1 --port 20103

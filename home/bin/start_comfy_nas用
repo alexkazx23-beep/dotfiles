@@ -1,0 +1,69 @@
+#!/usr/bin/env zsh
+
+# --- 1) 代理配置 ---
+export http_proxy="http://127.0.0.1:7890"
+export https_proxy="http://127.0.0.1:7890"
+export all_proxy="socks5://127.0.0.1:7890"
+export no_proxy="localhost,127.0.0.1,192.168.31.54"
+echo "✅ 终端代理已开启 (Port: 7890)"
+
+# --- 2) 检查 Windows 盘挂载 ---
+if [[ ! -d "/mnt/E/ComfyUI-aki-v3/ComfyUI/models" ]]; then
+  echo "⚠️ Windows 硬盘未挂载！请先在文件管理器里点开它。"
+  exit 1
+fi
+
+# --- 3) 查找 NAS 路径 ---
+KIO_BASE=""
+for i in {1..10}; do
+  matches=( /run/user/1000/kio-fuse-*/smb/192.168.31.54/Alexkazx(N/) )
+  if (( ${#matches[@]} > 0 )); then
+    KIO_BASE="${matches[1]}"
+    break
+  fi
+  sleep 1
+done
+
+if [[ -z "$KIO_BASE" ]]; then
+  echo "⚠️ NAS 尚未连接！"
+  exit 1
+fi
+
+# --- 4) 进入目录并激活环境 ---
+cd "$HOME/AI_Workspace/ComfyUI" || { echo "❌ 找不到 ComfyUI 目录"; exit 1; }
+
+if [[ -f "venv/bin/activate" ]]; then
+    source venv/bin/activate
+    echo "✅ 已激活虚拟环境"
+else
+    echo "❌ 找不到 venv"
+    exit 1
+fi
+
+# --- 5) 注入 5070 Ti & Blackwell 深度优化变量 ---
+# [核心优化] 对标 Windows 日志中的异步内存管理
+# 让 PyTorch 使用扩展段，并优化小块内存回收，防止 Wan2.1 这种大模型导致的碎片化
+export PYTORCH_CUDA_ALLOC_CONF="expandable_segments:True,max_split_size_mb:128"
+
+# 强制开启 cuDNN 加速（RTX 50系必备）
+export TORCH_CUDNN_V8_API_ENABLED=1
+
+# 允许 TensorCore 即使在 FP32 下也参与计算，能显著提速且微量降显存
+export TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=1
+
+# --- 6) 启动 ComfyUI ---
+# 这里是“抄作业”的灵魂：
+# 1. --cuda-malloc: 对应日志里的 cudaMallocAsync，是防爆显存的头号功臣。
+# 2. --async-upload: 对应日志里的 "2 streams" 异步加载，能边画边加载模型。
+# 3. --bf16-vae: 针对 50 系显卡，强制 VAE 在 BF16 下运行，能省下几百 MB 关键显存。
+# 4. --fast: 你既然追求速度就留着，但如果遇到报错，优先删掉它（Torch Compile 在 Linux 上有时比 Win 稳，但更吃显存）。
+
+python main.py \
+  --output-directory "$KIO_BASE/Comfyui/output/" \
+  --preview-method auto \
+  --cuda-malloc \
+  --async-offload \
+  --use-sage-attention \
+  --bf16-vae \
+  --normalvram \
+  #--fast

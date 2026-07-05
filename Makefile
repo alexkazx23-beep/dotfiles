@@ -1,0 +1,98 @@
+# Dotfiles
+# Usage:
+#   make install   - Create symlinks from repo to $HOME
+#   make uninstall - Remove symlinks from $HOME
+#   make update    - Git pull and reinstall
+
+DOTFILES_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+CONFIG_DIR  := $(DOTFILES_DIR)/config
+HOME_DIR    := $(DOTFILES_DIR)/home
+
+# All items under config/ to symlink into ~/.config/
+# Directories get symlinked as directories, files get symlinked as files
+CONFIGS := kitty niri fish fuzzel fastfetch btop matugen yazi mpv satty \
+           pacseek fontconfig gtk-3.0 gtk-4.0 qt5ct qt6ct xsettingsd \
+           environment.d cava fcitx5 nvim starship.toml
+
+# All items under home/ to symlink into ~/
+HOMEFILES := .zshrc .zprofile .bash_profile .profile .gitconfig .gtkrc-2.0 \
+             .Xresources bin
+
+.PHONY: install uninstall update
+
+install:
+	@echo "==> Installing dotfiles..."
+	@mkdir -p $(HOME)/.config
+	@# Symlink config directories/files
+	@for cfg in $(CONFIGS); do \
+		if [ -e "$(CONFIG_DIR)/$$cfg" ]; then \
+			target="$(HOME)/.config/$$cfg"; \
+			link="$(CONFIG_DIR)/$$cfg"; \
+			if [ -L "$$target" ] && [ "$$(readlink $$target)" = "$$link" ]; then \
+				echo "  [SKIP] $$target (already linked)"; \
+			elif [ -e "$$target" ] || [ -L "$$target" ]; then \
+				backup="$$target.bak.$$(date +%s)"; \
+				echo "  [BACKUP] $$target -> $$backup"; \
+				mv "$$target" "$$backup"; \
+				ln -s "$$link" "$$target"; \
+				echo "  [LINK] $$target"; \
+			else \
+				ln -s "$$link" "$$target"; \
+				echo "  [LINK] $$target"; \
+			fi; \
+		fi; \
+	done
+	@# Symlink home dotfiles
+	@for file in $(HOMEFILES); do \
+		if [ -e "$(HOME_DIR)/$$file" ]; then \
+			target="$(HOME)/$$file"; \
+			link="$(HOME_DIR)/$$file"; \
+			if [ -L "$$target" ] && [ "$$(readlink $$target)" = "$$link" ]; then \
+				echo "  [SKIP] $$target (already linked)"; \
+			elif [ -e "$$target" ] || [ -L "$$target" ]; then \
+				backup="$$target.bak.$$(date +%s)"; \
+				echo "  [BACKUP] $$target -> $$backup"; \
+				mv "$$target" "$$backup"; \
+				ln -s "$$link" "$$target"; \
+				echo "  [LINK] $$target"; \
+			else \
+				ln -s "$$link" "$$target"; \
+				echo "  [LINK] $$target"; \
+			fi; \
+		fi; \
+	done
+	@echo "==> Done. Run 'matugen' to regenerate theme colors if needed."
+
+uninstall:
+	@echo "==> Removing dotfile symlinks..."
+	@for cfg in $(CONFIGS); do \
+		target="$(HOME)/.config/$$cfg"; \
+		if [ -L "$$target" ]; then \
+			link="$$(readlink $$target)"; \
+			if echo "$$link" | grep -q "$(DOTFILES_DIR)"; then \
+				rm "$$target"; \
+				echo "  [REMOVE] $$target"; \
+			else \
+				echo "  [SKIP] $$target (not managed by dotfiles)"; \
+			fi; \
+		fi; \
+	done
+	@for file in $(HOMEFILES); do \
+		target="$(HOME)/$$file"; \
+		if [ -L "$$target" ]; then \
+			link="$$(readlink $$target)"; \
+			if echo "$$link" | grep -q "$(DOTFILES_DIR)"; then \
+				rm "$$target"; \
+				echo "  [REMOVE] $$target"; \
+			else \
+				echo "  [SKIP] $$target (not managed by dotfiles)"; \
+			fi; \
+		fi; \
+	done
+	@echo "==> Done. Backups (if any) are at *.bak.* files."
+
+update:
+	@echo "==> Updating dotfiles..."
+	@cd $(DOTFILES_DIR) && git pull
+	@$(MAKE) install
+	@echo "==> Done."

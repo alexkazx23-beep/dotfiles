@@ -1,0 +1,28 @@
+#!/usr/bin/env zsh
+
+echo "============ 1. 清理孤立软件包 ============"
+pkg_mgr="pacman"
+if command -v paru &>/dev/null; then
+    pkg_mgr="paru"
+elif command -v yay &>/dev/null; then
+    pkg_mgr="yay"
+fi
+
+# 获取孤立包列表
+orphans=($(pacman -Qtdq 2>/dev/null))
+if [ ${#orphans[@]} -gt 0 ]; then
+    echo "找到 ${#orphans[@]} 个无用孤立包，正在通过 $pkg_mgr 卸载..."
+    sudo $pkg_mgr -Rns $orphans
+else
+    echo "系统很干净，没有孤立软件包。"
+fi
+
+echo "============ 2. 清理下载缓存 ============"
+sudo $pkg_mgr -Sc --noconfirm
+
+echo "============ 3. 清理系统日志缓存 (保留近3天) ============"
+sudo journalctl --vacuum-time=3d
+
+echo "============ 4. 清理用户垃圾缓存 ============"
+rm -rf ~/.cache/fastfetch/* 2>/dev/null
+echo "✨ 清理完成喵！"
