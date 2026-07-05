@@ -94,6 +94,8 @@ input {
         // middle-emulation
     }
 }
+// 尝试激活 KDE 的密码管理器守护进程
+spawn-at-startup "/usr/lib/pam_kwallet_init"
 // 自动启动
 spawn-at-startup "dms" "run"
 // 录屏修复

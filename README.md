@@ -6,7 +6,9 @@
 
 ```
 ~/dotfiles/
-├── Makefile          # install / uninstall / update
+├── Makefile          # install / uninstall / update / packages
+├── packages/         # 包清单 (official.txt + aur.txt)
+├── scripts/          # 辅助脚本
 ├── config/           # → ~/.config/
 │   ├── kitty/        # 终端模拟器
 │   ├── niri/         # 窗口管理器 + dms + scripts
@@ -65,6 +67,33 @@ make update
 ```
 
 相当于 `git pull && make install`。
+
+## 全新装机流程
+
+```bash
+# 1. 克隆 dotfiles
+git clone https://github.com/Alexkazx/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+
+# 2. 恢复所有包 (官方 + AUR)
+bash scripts/restore-packages.sh
+
+# 3. 创建符号链接
+make install
+
+# 4. 生成主题配色
+matugen image /path/to/your/wallpaper.png
+```
+
+### 导出当前包列表
+
+当安装了新包后，更新包清单：
+
+```bash
+make packages
+```
+
+这会将当前系统上所有显式安装的包导出到 `packages/official.txt` 和 `packages/aur.txt`。
 
 ## 首次安装后需要做的事
 

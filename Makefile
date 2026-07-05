@@ -3,6 +3,7 @@
 #   make install   - Create symlinks from repo to $HOME
 #   make uninstall - Remove symlinks from $HOME
 #   make update    - Git pull and reinstall
+#   make packages  - Export current package lists
 
 DOTFILES_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 CONFIG_DIR  := $(DOTFILES_DIR)/config
@@ -18,7 +19,7 @@ CONFIGS := kitty niri fish fuzzel fastfetch btop matugen yazi mpv satty \
 HOMEFILES := .zshrc .zprofile .bash_profile .profile .gitconfig .gtkrc-2.0 \
              .Xresources bin
 
-.PHONY: install uninstall update
+.PHONY: install uninstall update packages
 
 install:
 	@echo "==> Installing dotfiles..."
@@ -96,3 +97,12 @@ update:
 	@cd $(DOTFILES_DIR) && git pull
 	@$(MAKE) install
 	@echo "==> Done."
+
+packages:
+	@echo "==> Exporting package lists..."
+	@mkdir -p $(DOTFILES_DIR)/packages
+	@pacman -Qqen > $(DOTFILES_DIR)/packages/official.txt
+	@pacman -Qqem > $(DOTFILES_DIR)/packages/aur.txt
+	@echo "  official.txt: $$(wc -l < $(DOTFILES_DIR)/packages/official.txt) packages"
+	@echo "  aur.txt:      $$(wc -l < $(DOTFILES_DIR)/packages/aur.txt) packages"
+	@echo "==> Done. Run 'make install' to symlink if not already done."
