@@ -32,17 +32,17 @@ environment {
     //GSK_RENDERER "gl"
     // 默认文本编辑器
     EDITOR "nvim"
-    // 代理（小写）
-    http_proxy "http://127.0.0.1:7890"
-    https_proxy "http://127.0.0.1:7890"
-    all_proxy "socks5://127.0.0.1:7890"
-    no_proxy "localhost,127.0.0.1"
+    // 代理（已注释，需要时取消注释）
+    // http_proxy "http://127.0.0.1:7890"
+    // https_proxy "http://127.0.0.1:7890"
+    // all_proxy "socks5://127.0.0.1:7890"
+    // no_proxy "localhost,127.0.0.1"
 
-    // 代理（大写，专门治各种不服的底层网络库）
-    HTTP_PROXY "http://127.0.0.1:7890"
-    HTTPS_PROXY "http://127.0.0.1:7890"
-    ALL_PROXY "socks5://127.0.0.1:7890"
-    NO_PROXY "localhost,127.0.0.1"
+    // 代理（大写）
+    // HTTP_PROXY "http://127.0.0.1:7890"
+    // HTTPS_PROXY "http://127.0.0.1:7890"
+    // ALL_PROXY "socks5://127.0.0.1:7890"
+    // NO_PROXY "localhost,127.0.0.1"
 
 }
 

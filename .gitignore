@@ -9,8 +9,8 @@
 # Fish 自动生成的状态
 config/fish/fish_variables
 
-# Yazi 下载的 flavors（由 yazi 包管理器管理）
-config/yazi/flavors/
+# Yazi flavor 预览图片（仅用于主题选择器展示）
+config/yazi/flavors/*/preview.png
 
 # Rime 构建缓存和字典（由 rime-ice 管理）
 config/fcitx5/rime/build/
