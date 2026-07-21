@@ -28,6 +28,7 @@
 │   ├── qt5ct/        # Qt5 主题
 │   ├── qt6ct/        # Qt6 主题
 │   ├── xsettingsd/   # X 设置
+│   ├── xdg-desktop-portal/ # Portal 路由 (FileChooser→KDE, Screenshot→GNOME)
 │   ├── environment.d/# 环境变量
 │   ├── cava/         # 音频可视化
 │   ├── nvim/         # Neovim (LazyVim)
