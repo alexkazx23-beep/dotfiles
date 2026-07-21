@@ -6,8 +6,8 @@
     "width": 25,
     // "height":20,
     "color":{
-      "1":"#89b4fa",
-      "2":"#89b4fa"
+      "1":"#66800b",
+      "2":"#66800b"
     },
     "padding": {
       "top": 1, // Top padding
@@ -18,9 +18,9 @@
   "display": {
     "separator": " ", // Separator between keys and values
     "color": {
-      //"keys": "#b4befe", // Key color module名字的颜色
-      "title": "#a6adc8", // Title color 主机名的颜色
-      "output": "#a6adc8"
+      //"keys": "#66800b", // Key color module名字的颜色
+      "title": "#100f0f", // Title color 主机名的颜色
+      "output": "#100f0f"
     },
   },
   "modules": [
@@ -30,108 +30,108 @@
       "key": "OS", //module名字的显示
       // "keyColor": "#00ff00",      //module名字颜色
       // "format": "{name} {version}",    //具体内容
-      "keyColor": "#89b4fa",
+      "keyColor": "#66800b",
 
     },
     {
       "type": "kernel",
       "key": " ├   KER ",
-      "keyColor": "#89b4fa",
+      "keyColor": "#66800b",
 
     },
     {
       "type": "packages",
       "key": " ├   PAK ",
       "format": "{all}",
-      "keyColor": "#89b4fa",
+      "keyColor": "#66800b",
     },
     {
       "type": "command",
       "key": " ├   AGE ",
       "text": "birth_install=$(stat -c %W / 2>/dev/null || stat -f %B /); current=$(date +%s); days_difference=$(( (current - birth_install) / 86400 )); echo $days_difference days",
-      "keyColor": "#89b4fa",
+      "keyColor": "#66800b",
     },
     {
       "type": "title",
       "key": " └   USR ",
-      "keyColor": "#89b4fa",
+      "keyColor": "#66800b",
     },
     "break",
     "break",
     {
       "type": "wm",
       "key": "WM",
-      "keyColor": "#b4befe",
+      "keyColor": "#66800b",
    },
     {
       "type": "de",
       "key": " ├ 󱈹  DES ",
-      "keyColor": "#b4befe",
-     //"outputColor": "#b4befe"
+      "keyColor": "#66800b",
+     //"outputColor": "#66800b"
     },
     {
       "type": "shell",
       "key": " ├   SHE ",
-      "keyColor": "#b4befe",
-      //"outputColor": "#b4befe"
+      "keyColor": "#66800b",
+      //"outputColor": "#66800b"
     },
     {
       "type": "terminal",
       "key": " ├   TER ",
-      "keyColor": "#b4befe",
-      //"outputColor": "#b4befe"
+      "keyColor": "#66800b",
+      //"outputColor": "#66800b"
     },
     {
       "type": "terminalfont",
       "key": " └   TFO ",
-      "keyColor": "#b4befe",
-      //"outputColor": "#b4befe"
+      "keyColor": "#66800b",
+      //"outputColor": "#66800b"
     },
     "break",
     "break",
     {
       "type": "host",
       "key": "PC ",
-      "keyColor": "#b4befe",
-      //"outputColor": "#b4befe"
+      "keyColor": "#66800b",
+      //"outputColor": "#66800b"
     },
     {
       "type": "cpu",
       "key": " ├   CPU ",
-      "keyColor": "#b4befe",
-      //"outputColor": "#b4befe"
+      "keyColor": "#66800b",
+      //"outputColor": "#66800b"
     },
     {
       "type": "memory",
       "key": " ├   MEM ",
-      "keyColor": "#b4befe",
-      //"outputColor": "#b4befe"
+      "keyColor": "#66800b",
+      //"outputColor": "#66800b"
     },
     {
       "type": "swap",
       "key": " ├   SWP ",
-      "keyColor": "#b4befe",
-      //"outputColor": "#b4befe"
+      "keyColor": "#66800b",
+      //"outputColor": "#66800b"
     },
     {
       "type": "gpu",
       "key": " ├ 󰢮  GPU ",
       "format": "{1} {2}",
-      "keyColor": "#b4befe",
-      //"outputColor": "#b4befe"
+      "keyColor": "#66800b",
+      //"outputColor": "#66800b"
     },
     {
       "type": "display",
       "key": " ├   MON ",
       "format": "{name} {width}x{height}@{refresh-rate} ",
-      "keyColor": "#b4befe",
-      //"outputColor": "#b4befe"
+      "keyColor": "#66800b",
+      //"outputColor": "#66800b"
     },
     {
       "type": "disk",
       "key": " └ 󰋊  DIS ",
-      "keyColor": "#b4befe",
-      //"outputColor": "#b4befe"
+      "keyColor": "#66800b",
+      //"outputColor": "#66800b"
     },
     "break",
     {

@@ -1,18 +1,38 @@
 #!/usr/bin/env bash
-set -e
 
 COMFY="$HOME/AI_Workspace/ComfyUI"
-
-echo "==> Updating ComfyUI..."
-
 cd "$COMFY"
 
-git pull --ff-only
+source venv/bin/activate
 
-echo
+# 代理
+export http_proxy="http://127.0.0.1:7890"
+export https_proxy="http://127.0.0.1:7890"
+
+# 保存软链接
+links=()
+targets=()
+for item in *; do
+    if [[ -L "$item" ]]; then
+        links+=("$item")
+        targets+=("$(readlink -f "$item")")
+        rm "$item"
+    fi
+done
+
+# 退出时无论成功失败都恢复软链接
+cleanup() {
+    for i in "${!links[@]}"; do
+        rm -rf "${links[$i]}" 2>/dev/null
+        ln -sf "${targets[$i]}" "${links[$i]}"
+    done
+}
+trap cleanup EXIT
+
+echo "==> Pulling latest ComfyUI..."
+git pull --autostash || { echo "git pull 失败，可能是网络问题"; exit 1; }
+
 echo "==> Updating core requirements..."
-
 uv pip install -r requirements.txt
 
-echo
-echo "✓ Done!"
+echo "==> Done! $(git log --oneline -1)"

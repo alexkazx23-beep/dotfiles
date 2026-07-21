@@ -13,7 +13,7 @@ HOME_DIR    := $(DOTFILES_DIR)/home
 # Directories get symlinked as directories, files get symlinked as files
 CONFIGS := kitty niri fish fuzzel fastfetch btop matugen yazi mpv satty \
            pacseek fontconfig gtk-3.0 gtk-4.0 qt5ct qt6ct xsettingsd \
-           environment.d cava fcitx5 nvim starship.toml
+           xdg-desktop-portal environment.d cava fcitx5 nvim starship.toml
 
 # All items under home/ to symlink into ~/
 HOMEFILES := .zshrc .zprofile .bash_profile .profile .gitconfig .gtkrc-2.0 \

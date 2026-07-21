@@ -37,14 +37,19 @@ compinit
 eval "$(starship init zsh)"
 
 #Comfyui 对应的脚本位置
-alias comfy="$HOME/bin/start_comfy"
+comfy() {
+    if [ "$1" = "update" ]; then
+        "$HOME/bin/comfy_update"
+    else
+        "$HOME/bin/start_comfy"
+    fi
+}
 alias llama="$HOME/bin/start_llama"
 alias cs="$HOME/bin/character-select"
 alias anima="$HOME/bin/start-anima"
 alias lora="$HOME/bin/start-lora"
 alias am="cd /home/Alexkazx/AI_Workspace/AnimaDex && ./run.sh"
 alias mds="$HOME/bin/run_mds.sh"
-alias comfy_update="$HOME/bin/comfy_update"
 # Clash Verge 代理配置
 proxy() {
     if [ "$1" = "on" ]; then
