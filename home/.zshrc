@@ -144,3 +144,11 @@ miku_greet() {
 
 # 🎯 在终端启动时自动运行一次
 miku_greet
+export SUDO_ASKPASS="$HOME/.local/bin/askpass.sh"
+
+# >>> Claude Code Haha PATH >>>
+export PATH="$HOME/.local/bin:$PATH"
+# <<< Claude Code Haha PATH <<<
+
+# npm global dir
+export PATH="$HOME/.npm-global/bin:$PATH"

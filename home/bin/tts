@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+# --- 1) 目录与虚拟环境 ---
+cd "$HOME/AI_Workspace/index-tts" || { echo "❌ 找不到 index-tts 目录"; exit 1; }
+
+if [[ -f ".venv/bin/activate" ]]; then
+    source .venv/bin/activate
+    echo "✅ 已激活虚拟环境 (Python $(python3 --version 2>&1))"
+else
+    echo "❌ 找不到 .venv"
+    exit 1
+fi
+
+# --- 2) 启动 IndexTTS2 API (NVIDIA) ---
+echo "🚀 启动 IndexTTS2 API (端口 7880)..."
+cd nvidia/api
+python3 api.py "$@"

@@ -1,28 +1,43 @@
 #!/usr/bin/env zsh
 
+# ── 在脚本开头一次性提权 ──
+sudo -v || { echo "❌ 需要 sudo 权限"; exit 1; }
+# 后台续期 sudo 令牌（避免长时间运行时超时）
+while true; do sudo -n true; sleep 60; done 2>/dev/null &
+trap "kill $! 2>/dev/null" EXIT INT TERM
+
 echo "============ 1. 清理孤立软件包 ============"
-pkg_mgr="pacman"
-if command -v paru &>/dev/null; then
-    pkg_mgr="paru"
-elif command -v yay &>/dev/null; then
-    pkg_mgr="yay"
+# 使用绝对路径防止 PATH 注入
+if command -v /usr/bin/paru &>/dev/null; then
+    pkg_mgr="/usr/bin/paru"
+elif command -v /usr/bin/yay &>/dev/null; then
+    pkg_mgr="/usr/bin/yay"
+else
+    pkg_mgr="/usr/bin/pacman"
 fi
 
 # 获取孤立包列表
 orphans=($(pacman -Qtdq 2>/dev/null))
 if [ ${#orphans[@]} -gt 0 ]; then
-    echo "找到 ${#orphans[@]} 个无用孤立包，正在通过 $pkg_mgr 卸载..."
-    sudo $pkg_mgr -Rns $orphans
+    echo "找到 ${#orphans[@]} 个无用孤立包："
+    printf '  %s\n' "${orphans[@]}"
+    echo "正在通过 ${pkg_mgr:t} 卸载..."
+    sudo $pkg_mgr -Rns --noconfirm $orphans
 else
     echo "系统很干净，没有孤立软件包。"
 fi
 
 echo "============ 2. 清理下载缓存 ============"
-sudo $pkg_mgr -Sc --noconfirm
+# 先清理残留的临时下载文件（zsh 的 NOMATCH 会让 rm *.tmp 在没匹配时中断）
+sudo find /var/cache/pacman/pkg/ -maxdepth 1 -name 'download-*' -delete 2>/dev/null || true
+sudo $pkg_mgr -Sc --noconfirm 2>&1 || true
+# 额外清理 paru / yay AUR 缓存
+sudo rm -rf /root/.cache/${pkg_mgr:t}/clone/* /root/.cache/${pkg_mgr:t}/diff/* 2>/dev/null
 
 echo "============ 3. 清理系统日志缓存 (保留近3天) ============"
 sudo journalctl --vacuum-time=3d
 
 echo "============ 4. 清理用户垃圾缓存 ============"
-rm -rf ~/.cache/fastfetch/* 2>/dev/null
+# 用 (N) glob qualifier 避免空目录报错（zsh 独有）
+rm -rf ~/.cache/fastfetch/*(N) ~/.cache/fastfetch/.*(N) 2>/dev/null
 echo "✨ 清理完成喵！"

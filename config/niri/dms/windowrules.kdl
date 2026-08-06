@@ -1,14 +1,51 @@
 // DMS Window Rules - Managed by DankMaterialShell
 // Do not edit manually - changes may be overwritten
 
-// @id=wr_1782650814328277121 @name=com.interversehq.qView
-window-rule {
-    match app-id="^com.interversehq.qView$"
-    open-floating true
-}
-// 当弹窗叫起 file_chooser 时，强行让它悬浮
+// @id=dms_rule_1 @name=
 window-rule {
     match app-id="file_chooser"
+    open-floating true
+}
 
+// @id=dms_rule_2 @name=
+window-rule {
+    match app-id="^clawd-on-desk$" title="^Clawd$"
+    open-floating true
+    geometry-corner-radius 0
+    draw-border-with-background false
+    background-effect {
+        blur false
+        xray false
+    }
+    default-floating-position x=0 y=0 relative-to="bottom-right"
+}
+
+// @id=dms_rule_3 @name=
+window-rule {
+    match app-id="^clawd-on-desk$" title="^Clawd Settings$"
+    open-floating true
+}
+
+// @id=wr_1785475162139714022 @name=splayer
+window-rule {
+    match app-id="^splayer$"
+    open-floating true
+}
+
+// @id=wr_1785475168966331377 @name=com.danklinux.dms
+window-rule {
+    match app-id="^com.danklinux.dms$"
+    open-floating true
+}
+
+// @id=wr_1785475177688906687 @name=kitty
+window-rule {
+    match app-id="^kitty$"
+    open-maximized true
+}
+
+// @id=wr_1785582845914519316 @name=com.interversehq.qView
+window-rule {
+    match app-id="^com.interversehq.qView$"
     open-floating true
 }

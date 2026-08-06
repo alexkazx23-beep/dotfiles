@@ -18,11 +18,8 @@ else
     exit 1
 fi
 
-# --- 3) 自动搞定 --enable-manager 的前置依赖 (使用 uv 秒级同步) ---
-if [[ -f "manager_requirements.txt" ]]; then
-    echo "⚡ 正在通过 uv 检查 Manager 核心依赖..."
-    uv pip install -r manager_requirements.txt --quiet
-fi
+# --- 3) (已移除) 原来自动强制重装 Manager: uv pip install -r manager_requirements.txt
+#    保留最新版 comfyui-manager，不再每次启动强制重装为 4.2.2。
 
 # --- 4) 注入 5070 Ti & Blackwell 深度优化变量 ---
 # 激进的防碎片化策略（保留此项，故在下方启动项中移除 --cuda-malloc）
@@ -45,4 +42,5 @@ python main.py \
   --fast-disk \
   --bf16-vae \
   --auto-launch \
-  --enable-manager
+  --enable-manager \
+  --enable-manager-legacy-ui
